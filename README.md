@@ -1,6 +1,6 @@
 <div align="center">
 
-# Unvix
+# Unvix - FireFox Edition.
 
 **Unveil new endpoints. Discover new features.**
 
