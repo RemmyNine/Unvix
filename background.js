@@ -317,8 +317,8 @@ async function refreshBadge() {
   if (n) {
     // The gold accent from ui/theme.css (--accent), with dark ink on it: a badge
     // is a tiny area, so it needs the accent solid rather than tinted.
-    chrome.action.setBadgeBackgroundColor({ color: '#e6b25c' });
-    if (chrome.action.setBadgeTextColor) chrome.action.setBadgeTextColor({ color: '#201605' });
+    chrome.action.setBadgeBackgroundColor({ color: '#b45309' });
+    if (chrome.action.setBadgeTextColor) chrome.action.setBadgeTextColor({ color: '#ffffff' });
   }
   return n;
 }
@@ -636,3 +636,4 @@ chrome.runtime.onMessage.addListener((request, sender) => {
   }
   drainScanQueue();
 });
+

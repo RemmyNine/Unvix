@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="theme.css">
+  <title>Unvix</title>
+  <style>
+    /* Popup layout — Light Theme & High Readability (Firefox Edition) */
+    html, body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      width: 480px;
+      height: 590px;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-app);
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    /* ---------- header: identity + actions ---------- */
+    .popup-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background-color: var(--bg-inset);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      font-size: 14.5px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-main);
+    }
+    .brand-version {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: .3px;
+      color: var(--text-muted);
+      text-transform: none;
+      margin-left: 2px;
+      font-weight: 600;
+    }
+    .header-actions { display: flex; align-items: center; gap: 6px; }
+
+    .icon-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 7px;
+      border-radius: var(--radius-xs);
+      display: flex;
+      align-items: center;
+      transition: color .15s ease, background-color .15s ease, border-color .15s ease;
+    }
+    .icon-btn:hover { color: var(--text-main); background-color: var(--bg-surface-hover); border-color: var(--border-strong); }
+    .icon-btn.busy { color: var(--accent); border-color: var(--accent-line); }
+    .icon-btn.busy svg { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---------- status line ---------- */
+    .popup-status {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 16px;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+    .status-host {
+      font-family: var(--font-mono);
+      color: var(--text-main);
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
+    .status-counts { display: flex; align-items: baseline; gap: 8px; flex-shrink: 0; font-family: var(--font-mono); font-size: 12.5px; }
+    .count-new { color: var(--accent); font-weight: 700; }
+    .count-new::before { content: '· '; color: var(--border-strong); font-weight: 400; }
+
+    /* ---------- toolbar ---------- */
+    .popup-toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 16px;
+      background-color: var(--bg-app);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .popup-toolbar input[type="search"],
+    .popup-toolbar .toggle {
+      height: 38px;
+      box-sizing: border-box;
+      padding-top: 0;
+      padding-bottom: 0;
+      margin: 0;
+    }
+    .popup-toolbar input[type="search"] {
+      flex: 1;
+      min-width: 0;
+      padding-left: 12px;
+      padding-right: 12px;
+      font-size: 13.5px;
+      background: var(--bg-surface);
+    }
+    .popup-toolbar .toggle {
+      padding-left: 12px;
+      padding-right: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--bg-surface);
+    }
+    .popup-toolbar .toggle.on {
+      background: var(--accent-soft);
+      border-color: var(--accent-line);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ---------- list ---------- */
+    .popup-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 0 18px;
+      background-color: var(--bg-app);
+    }
+
+    .target-group { margin-bottom: 14px; }
+    .target-group:last-child { margin-bottom: 4px; }
+
+    .target-group h3 {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 4px 10px;
+      margin: 0;
+      padding: 10px 16px 8px;
+      border-bottom: 1px solid var(--border-color);
+      background-color: var(--bg-inset);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .grp-name {
+      font-size: 14.5px;
+      font-weight: 700;
+      letter-spacing: .1px;
+      color: var(--text-main);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .grp-meta {
+      flex-basis: 100%;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .grp-here {
+      color: var(--accent);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .9px;
+      text-transform: uppercase;
+      background: var(--accent-soft);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--accent-line);
+    }
+    .target-group.is-here h3 { box-shadow: inset 3px 0 0 var(--accent); }
+
+    .endpoint-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 11px 16px;
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      transition: background-color .12s ease;
+    }
+    .endpoint-item:hover { background-color: var(--bg-surface-hover); }
+    .endpoint-item.is-new { box-shadow: inset 3px 0 0 var(--accent); background-color: #fffdfa; }
+
+    .ep-body { min-width: 0; flex: 1; }
+    .ep-path { word-break: break-all; color: var(--text-main); font-weight: 500; font-size: 13.5px; }
+    .ep-src {
+      display: block;
+      margin-top: 5px;
+      font-size: 12px;
+      color: var(--text-dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ep-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+
+    .ep-copy {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 5px 9px;
+      border-radius: var(--radius-xs);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font-sans);
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity .12s ease, color .15s ease, border-color .15s ease, background-color .15s ease;
+    }
+    .endpoint-item:hover .ep-copy,
+    .endpoint-item:focus-within .ep-copy,
+    .ep-copy:focus,
+    .ep-copy.done { opacity: 1; }
+    .ep-copy:hover { color: var(--text-main); border-color: var(--border-strong); background: var(--bg-elevated); }
+    .ep-copy.done { color: var(--accent); border-color: var(--accent-line); background: var(--accent-soft); }
+
+    .group-empty {
+      padding: 10px 16px 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .list-note {
+      margin: 24px 16px 0;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .list-note .hint { display: block; margin-top: 6px; font-size: 13px; color: var(--text-dim); }
+    .list-note .link-btn {
+      background: none;
+      border: 0;
+      padding: 0;
+      margin-top: 10px;
+      color: var(--accent);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .list-note .link-btn:hover { color: var(--accent-bright); }
+
+    .empty-state { text-align: center; color: var(--text-muted); margin-top: 56px; padding: 0 16px; }
+    .empty-state svg { opacity: .25; margin-bottom: 14px; color: var(--text-dim); }
+    .empty-state p { font-size: 14.5px; margin: 0; line-height: 1.6; color: var(--text-main); font-weight: 600; }
+    .empty-state .hint { margin-top: 10px; font-size: 13px; color: var(--text-muted); }
+    .empty-state .btn { margin-top: 16px; }
+
+    .scope-note {
+      margin: 12px 16px 0;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xs);
+      padding: 8px 12px;
+    }
+
+    /* ---------- footer ---------- */
+    .popup-footer {
+      padding: 12px 16px;
+      background-color: var(--bg-inset);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 10px;
+    }
+    .btn-full { flex: 1; padding: 10px 14px; font-size: 13.5px; }
+    .popup-footer .btn {
+      background: var(--bg-surface);
+      border-color: var(--border-strong);
+      color: var(--text-main);
+      font-weight: 650;
+    }
+    .popup-footer .btn:hover { background: var(--bg-surface-hover); border-color: var(--text-muted); color: var(--text-main); }
+    .popup-footer .btn-strong { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    .popup-footer .btn-strong:hover { background: var(--accent-bright); border-color: var(--accent-bright); }
+  </style>
+</head>
+<body>
+
+  <header class="popup-header">
+    <div class="brand-title">
+      <svg class="brand-mark" width="16" height="16" viewBox="0 0 128 128" aria-hidden="true" focusable="false">
+        <circle cx="54" cy="54" r="26" fill="none" stroke="currentColor" stroke-width="11"/>
+        <line x1="71" y1="71" x2="104" y2="104" stroke="currentColor" stroke-width="14" stroke-linecap="round"/>
+        <circle cx="54" cy="54" r="8" fill="currentColor"/>
+      </svg>
+      Unvix
+      <span id="brandVersion" class="brand-version"></span>
+    </div>
+    <div class="header-actions">
+      <button id="rescanPage" class="icon-btn" title="Rescan this page">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+      </button>
+      <button id="openOptions" class="icon-btn" title="Open the dashboard">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="popup-status" id="popupStatus">
+    <span class="status-host" id="statusHost">—</span>
+    <span class="status-counts">
+      <span id="statTotal">0 endpoints</span>
+      <span id="statNew" class="count-new" style="display:none">0 new</span>
+    </span>
+  </div>
+
+  <div class="popup-toolbar" id="popupToolbar">
+    <input type="search" id="epSearch" placeholder="Filter endpoints…" autocomplete="off"
+           title="Filter by path or source file (press / to focus)">
+    <!-- NEW only is on by default: opening the popup is about "what is new for
+         this page", and the full list is one click away. -->
+    <label class="toggle on" id="onlyNewToggle" title="Show only endpoints discovered since the last acknowledge">
+      <input type="checkbox" id="onlyNew" checked> NEW only
+    </label>
+  </div>
+
+  <main class="popup-content" id="findingsList"></main>
+
+  <footer class="popup-footer">
+    <button id="clearBadge" class="btn btn-secondary btn-full" title="Clear the NEW flags and the icon count">Acknowledge all</button>
+    <button id="openDashboard" class="btn btn-full btn-strong">Dashboard</button>
+  </footer>
+
+  <script src="page-scope.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

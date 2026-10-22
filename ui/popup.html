@@ -5,23 +5,20 @@
   <link rel="stylesheet" href="theme.css">
   <title>Unvix</title>
   <style>
-    /* Popup layout.
-       Rules of the house, learned the hard way:
-         - one number, one place. "4 new" lives on the status line and nowhere
-           else; it used to appear in the header, in every workspace heading and
-           on every row — a third time that is true by definition whenever the
-           NEW filter is on.
-         - the accent is a signal, not a surface: the new count, the toolbar
-           badge, one dot per new row. No fills, no pills.
-         - rows are a flat list with hairlines, not a bordered card each.
-         - nothing is shown twice, and a control that cannot do anything right
-           now (Acknowledge with nothing new) is not shown at all. */
+    /* Popup layout — Light Theme & High Readability */
+    html, body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
-      width: 420px;
-      height: 560px;
+      width: 480px;
+      height: 590px;
       display: flex;
       flex-direction: column;
       background-color: var(--bg-app);
+      overflow: hidden;
+      font-size: 14px;
     }
 
     /* ---------- header: identity + actions ---------- */
@@ -29,38 +26,39 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      padding: 11px 14px 9px;
+      gap: 12px;
+      padding: 12px 16px;
       background-color: var(--bg-inset);
+      border-bottom: 1px solid var(--border-color);
     }
     .brand-title {
       display: flex;
       align-items: center;
       gap: 8px;
       min-width: 0;
-      font-size: 12px;
-      font-weight: 650;
-      letter-spacing: 3px;
+      font-size: 14.5px;
+      font-weight: 700;
+      letter-spacing: 2px;
       text-transform: uppercase;
+      color: var(--text-main);
     }
-    /* The running build, so a stale unpacked copy is visible at a glance
-       instead of looking like a feature that does not work. */
     .brand-version {
       font-family: var(--font-mono);
-      font-size: 9px;
+      font-size: 11.5px;
       letter-spacing: .3px;
-      color: var(--text-dim);
+      color: var(--text-muted);
       text-transform: none;
-      margin-left: 1px;
+      margin-left: 2px;
+      font-weight: 600;
     }
-    .header-actions { display: flex; align-items: center; gap: 4px; }
+    .header-actions { display: flex; align-items: center; gap: 6px; }
 
     .icon-btn {
-      background: none;
-      border: 1px solid transparent;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
       color: var(--text-muted);
       cursor: pointer;
-      padding: 6px;
+      padding: 7px;
       border-radius: var(--radius-xs);
       display: flex;
       align-items: center;
@@ -71,43 +69,43 @@
     .icon-btn.busy svg { animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ---------- status line: which page, how many, how many new ---------- */
+    /* ---------- status line ---------- */
     .popup-status {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
       gap: 10px;
-      padding: 0 14px 10px;
-      background-color: var(--bg-inset);
+      padding: 9px 16px;
+      background-color: var(--bg-surface);
       border-bottom: 1px solid var(--border-color);
-      font-size: 10.5px;
-      color: var(--text-dim);
+      font-size: 12.5px;
+      color: var(--text-muted);
     }
     .status-host {
       font-family: var(--font-mono);
-      color: var(--text-muted);
+      color: var(--text-main);
+      font-weight: 600;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       min-width: 0;
     }
-    .status-counts { display: flex; align-items: baseline; gap: 6px; flex-shrink: 0; font-family: var(--font-mono); }
-    .count-new { color: var(--accent); font-weight: 600; }
-    .count-new::before { content: '· '; color: var(--text-dim); font-weight: 400; }
+    .status-counts { display: flex; align-items: baseline; gap: 8px; flex-shrink: 0; font-family: var(--font-mono); font-size: 12.5px; }
+    .count-new { color: var(--accent); font-weight: 700; }
+    .count-new::before { content: '· '; color: var(--border-strong); font-weight: 400; }
 
     /* ---------- toolbar ---------- */
     .popup-toolbar {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       align-items: center;
-      padding: 10px 14px;
+      padding: 10px 16px;
       background-color: var(--bg-app);
       border-bottom: 1px solid var(--border-color);
     }
-    /* one shared height so the search box and the NEW-only toggle line up */
     .popup-toolbar input[type="search"],
     .popup-toolbar .toggle {
-      height: 32px;
+      height: 38px;
       box-sizing: border-box;
       padding-top: 0;
       padding-bottom: 0;
@@ -116,17 +114,23 @@
     .popup-toolbar input[type="search"] {
       flex: 1;
       min-width: 0;
-      padding-left: 11px;
-      padding-right: 11px;
-      font-size: 12px;
+      padding-left: 12px;
+      padding-right: 12px;
+      font-size: 13.5px;
+      background: var(--bg-surface);
     }
-    .popup-toolbar .toggle { padding-left: 10px; padding-right: 11px; font-size: 11px; }
-    /* The filter is on by default, so its "on" state cannot be a gold panel or
-       the popup opens looking alarmed. Neutral surface, gold checkbox. */
+    .popup-toolbar .toggle {
+      padding-left: 12px;
+      padding-right: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--bg-surface);
+    }
     .popup-toolbar .toggle.on {
-      background: var(--bg-elevated);
-      border-color: var(--border-strong);
-      color: var(--text-main);
+      background: var(--accent-soft);
+      border-color: var(--accent-line);
+      color: var(--accent);
+      font-weight: 700;
     }
 
     /* ---------- list ---------- */
@@ -140,24 +144,22 @@
     .target-group { margin-bottom: 14px; }
     .target-group:last-child { margin-bottom: 4px; }
 
-    /* name on one line, the facts on the next: a heading squeezed into a single
-       line with a name, a marker and a count is where the clutter came from. */
     .target-group h3 {
       display: flex;
       flex-wrap: wrap;
       align-items: baseline;
-      gap: 3px 8px;
+      gap: 4px 10px;
       margin: 0;
-      padding: 9px 14px 7px;
+      padding: 10px 16px 8px;
       border-bottom: 1px solid var(--border-color);
-      background-color: var(--bg-app);
+      background-color: var(--bg-inset);
       position: sticky;
       top: 0;
       z-index: 1;
     }
     .grp-name {
-      font-size: 12.5px;
-      font-weight: 600;
+      font-size: 14.5px;
+      font-weight: 700;
       letter-spacing: .1px;
       color: var(--text-main);
       overflow: hidden;
@@ -168,69 +170,68 @@
       flex-basis: 100%;
       display: flex;
       align-items: baseline;
-      gap: 7px;
+      gap: 8px;
       font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-dim);
-    }
-    /* the workspace you are on: said in words and by one hairline, never a fill */
-    .grp-here {
+      font-size: 12px;
       color: var(--text-muted);
+    }
+    .grp-here {
+      color: var(--accent);
       font-family: var(--font-sans);
-      font-size: 9px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
       letter-spacing: .9px;
       text-transform: uppercase;
+      background: var(--accent-soft);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--accent-line);
     }
-    .target-group.is-here h3 { box-shadow: inset 2px 0 0 var(--accent-line); }
+    .target-group.is-here h3 { box-shadow: inset 3px 0 0 var(--accent); }
 
     .endpoint-item {
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      padding: 9px 14px;
+      padding: 11px 16px;
       font-family: var(--font-mono);
-      font-size: 11.5px;
-      border-bottom: 1px solid rgba(255, 255, 255, .045);
+      font-size: 13.5px;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
       transition: background-color .12s ease;
     }
     .endpoint-item:hover { background-color: var(--bg-surface-hover); }
-    /* One quiet edge per new row — and only when the list is not already
-       filtered to new rows, in which case every row is new and a marker on each
-       of them says nothing. */
-    .endpoint-item.is-new { box-shadow: inset 2px 0 0 var(--accent-line); }
+    .endpoint-item.is-new { box-shadow: inset 3px 0 0 var(--accent); background-color: #fffdfa; }
 
     .ep-body { min-width: 0; flex: 1; }
-    .ep-path { word-break: break-all; color: var(--text-main); }
+    .ep-path { word-break: break-all; color: var(--text-main); font-weight: 500; font-size: 13.5px; }
     .ep-src {
       display: block;
-      margin-top: 4px;
-      font-size: 9.5px;
+      margin-top: 5px;
+      font-size: 12px;
       color: var(--text-dim);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .ep-dot {
-      width: 5px;
-      height: 5px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background-color: var(--accent);
-      opacity: .85;
       flex-shrink: 0;
-      margin-top: 6px;
+      margin-top: 5px;
     }
 
-    /* Copy on hover or keyboard focus only: a button on every row is forty
-       buttons in a list that exists to be read. */
     .ep-copy {
-      background: none;
-      border: 1px solid transparent;
-      color: var(--text-dim);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
       cursor: pointer;
-      padding: 3px 6px;
+      padding: 5px 9px;
       border-radius: var(--radius-xs);
-      font-size: 10px;
+      font-size: 12px;
+      font-weight: 600;
       font-family: var(--font-sans);
       flex-shrink: 0;
       opacity: 0;
@@ -240,26 +241,24 @@
     .endpoint-item:focus-within .ep-copy,
     .ep-copy:focus,
     .ep-copy.done { opacity: 1; }
-    .ep-copy:hover { color: var(--text-main); border-color: var(--border-strong); background: var(--bg-base); }
+    .ep-copy:hover { color: var(--text-main); border-color: var(--border-strong); background: var(--bg-elevated); }
     .ep-copy.done { color: var(--accent); border-color: var(--accent-line); background: var(--accent-soft); }
 
-    /* ---------- the quiet lines ---------- */
     .group-empty {
-      padding: 6px 14px 8px;
-      font-size: 11px;
-      color: var(--text-dim);
+      padding: 10px 16px 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
     }
 
-    /* One message for the whole list, not one per workspace: when a search hides
-       everything, eight copies of "Nothing matches this filter" is the opposite
-       of help. */
     .list-note {
-      margin: 20px 14px 0;
-      font-size: 12.5px;
+      margin: 24px 16px 0;
+      font-size: 14px;
       color: var(--text-muted);
       line-height: 1.55;
     }
-    .list-note .hint { display: block; margin-top: 6px; font-size: 11px; color: var(--text-dim); }
+    .list-note .hint { display: block; margin-top: 6px; font-size: 13px; color: var(--text-dim); }
     .list-note .link-btn {
       background: none;
       border: 0;
@@ -267,53 +266,56 @@
       margin-top: 10px;
       color: var(--accent);
       font: inherit;
-      font-size: 11px;
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
       text-decoration: underline;
       text-underline-offset: 2px;
     }
     .list-note .link-btn:hover { color: var(--accent-bright); }
 
-    .empty-state { text-align: center; color: var(--text-muted); margin-top: 56px; padding: 0 14px; }
-    .empty-state svg { opacity: .16; margin-bottom: 14px; }
-    .empty-state p { font-size: 12.5px; margin: 0; line-height: 1.6; }
-    .empty-state .hint { margin-top: 10px; font-size: 11px; }
+    .empty-state { text-align: center; color: var(--text-muted); margin-top: 56px; padding: 0 16px; }
+    .empty-state svg { opacity: .25; margin-bottom: 14px; color: var(--text-dim); }
+    .empty-state p { font-size: 14.5px; margin: 0; line-height: 1.6; color: var(--text-main); font-weight: 600; }
+    .empty-state .hint { margin-top: 10px; font-size: 13px; color: var(--text-muted); }
     .empty-state .btn { margin-top: 16px; }
 
-    /* Told, not silent: when the page URL is unreadable the order is the stored
-       one, and that is worth one line rather than a puzzle. */
     .scope-note {
-      margin: 12px 14px 0;
-      font-size: 10.5px;
+      margin: 12px 16px 0;
+      font-size: 12.5px;
       line-height: 1.5;
-      color: var(--text-dim);
-      background: var(--bg-inset);
+      color: var(--text-muted);
+      background: var(--bg-surface);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-xs);
-      padding: 7px 9px;
+      padding: 8px 12px;
     }
 
     /* ---------- footer ---------- */
     .popup-footer {
-      padding: 11px 14px;
+      padding: 12px 16px;
       background-color: var(--bg-inset);
       border-top: 1px solid var(--border-color);
       display: flex;
-      gap: 8px;
+      gap: 10px;
     }
-    .btn-full { flex: 1; padding: 9px 12px; font-size: 12px; }
-    /* The footer is navigation, not a form: a solid gold "Dashboard" was the
-       loudest thing in the popup, for the least important decision in it. */
-    .popup-footer .btn { background: transparent; border-color: var(--border-color); color: var(--text-muted); }
-    .popup-footer .btn:hover { background: var(--bg-surface-hover); border-color: var(--border-strong); color: var(--text-main); }
-    .popup-footer .btn-strong { color: var(--text-main); border-color: var(--border-strong); }
+    .btn-full { flex: 1; padding: 10px 14px; font-size: 13.5px; }
+    .popup-footer .btn {
+      background: var(--bg-surface);
+      border-color: var(--border-strong);
+      color: var(--text-main);
+      font-weight: 650;
+    }
+    .popup-footer .btn:hover { background: var(--bg-surface-hover); border-color: var(--text-muted); color: var(--text-main); }
+    .popup-footer .btn-strong { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    .popup-footer .btn-strong:hover { background: var(--accent-bright); border-color: var(--accent-bright); }
   </style>
 </head>
 <body>
 
   <header class="popup-header">
     <div class="brand-title">
-      <svg class="brand-mark" width="14" height="14" viewBox="0 0 128 128" aria-hidden="true" focusable="false">
+      <svg class="brand-mark" width="16" height="16" viewBox="0 0 128 128" aria-hidden="true" focusable="false">
         <circle cx="54" cy="54" r="26" fill="none" stroke="currentColor" stroke-width="11"/>
         <line x1="71" y1="71" x2="104" y2="104" stroke="currentColor" stroke-width="14" stroke-linecap="round"/>
         <circle cx="54" cy="54" r="8" fill="currentColor"/>
@@ -323,14 +325,14 @@
     </div>
     <div class="header-actions">
       <button id="rescanPage" class="icon-btn" title="Rescan this page">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="23 4 23 10 17 10"></polyline>
           <polyline points="1 20 1 14 7 14"></polyline>
           <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
         </svg>
       </button>
       <button id="openOptions" class="icon-btn" title="Open the dashboard">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>

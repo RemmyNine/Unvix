@@ -1,10 +1,10 @@
 <div align="center">
 
-# Unvix - FireFox Edition.
+# Unvix
 
 **Unveil new endpoints. Discover new features.**
 
-A Chrome extension for passive JavaScript recon: it reads the scripts a site
+A browser extension (Chrome & Firefox) for passive JavaScript recon: it reads the scripts a site
 already loads, extracts the API endpoints and routes out of them with rules you
 control, and marks anything new on your next visit.
 
@@ -16,10 +16,22 @@ No accounts · no telemetry · no server — everything stays in your browser.
 
 ## Install
 
+### Google Chrome & Chromium
 1. Clone this repository.
-2. `chrome://extensions` → **Developer mode** → **Load unpacked** → this folder.
-3. Refresh the tabs you already had open. Chrome invalidates the content scripts
+2. In Chrome, open `chrome://extensions` → toggle **Developer mode** on (top right).
+3. Click **Load unpacked** → select this project root folder.
+4. Refresh the tabs you already had open. Chrome invalidates the content scripts
    of open tabs; that is true of every MV3 extension.
+
+### Mozilla Firefox
+1. Clone this repository.
+2. In Firefox, open:
+   ```text
+   about:debugging#/runtime/this-firefox
+   ```
+3. Click **Load Temporary Add-on...**.
+4. Navigate into the **`firefox`** folder in this project and select `manifest.json`.
+5. For full details and packaging instructions, see [`firefox/README.md`](firefox/README.md).
 
 ## Quick start
 
@@ -61,11 +73,10 @@ hairline and one dot per new row, and the count written once.
   `__vite__mapDeps`, a dynamic `import()`, `importScripts()`, a worker URL, a
   plain `"chunk-4a1f.js"` literal — every script the bundles name is fetched, so
   endpoints behind routes you never visited still show up.
-- **Nothing is lost to the resource buffer.** Chrome keeps only the last 250
-  resource-timing entries, so early bundles are evicted before a scan can see
-  them. That is why a page often yields more endpoints with DevTools open
-  (DevTools lifts the limit). Unvix raises the buffer itself at `document_start`
-  and re-reads it, so the result does not depend on DevTools.
+- **Nothing is lost to the resource buffer.** Browsers keep only the last resource-timing
+  entries, so early bundles are evicted before a scan can see them. That is why a page
+  often yields more endpoints with DevTools open (DevTools lifts the limit). Unvix raises
+  the buffer itself at `document_start` and re-reads it, so the result does not depend on DevTools.
 - **Late and inline scripts are included.** A `MutationObserver` catches scripts
   injected after load, module preloads and import maps are read, and inline
   `<script>` text is scanned as-is — it has no URL to fetch.
@@ -122,7 +133,7 @@ workspace marked **current page** is always one the scanner really feeds.
 
 - Nothing is sent anywhere: no analytics, no remote config, no third-party code.
 - Fetches happen in your browser, from your own session, to hosts you scoped.
-- Findings, workspaces and settings live in `chrome.storage.local`, and leave it
+- Findings, workspaces and settings live in extension local storage, and leave it
   only when you export them.
 - Unvix is **passive**: it reads the JavaScript the page already loaded. It does
   not fuzz, brute-force, or send anything to the target.
@@ -132,7 +143,7 @@ Use it only on assets you are authorised to test.
 ## Files
 
 ```
-manifest.json          MV3 manifest — no remote code, no background page
+manifest.json          Chrome MV3 manifest — service worker
 background.js          fetch + extract (service worker)
 content.js             script harvesting (DOM, Performance API, MutationObserver)
 regex-pack.txt         starter extraction rules, source of truth
@@ -143,6 +154,7 @@ ui/theme.css           shared dark theme (no remote fonts or assets)
 ui/page-scope.js       scope matching + "current page first" ordering for the popup
 ui/options.{html,js}   workspaces, rules, filters, settings, import/export
 ui/popup.{html,js}     findings list, NEW-only filter, rescan, acknowledge
+firefox/               Firefox MV3 version (background event page, gecko ID, options_ui)
 docs/                  screenshots and the social preview card
 ```
 
